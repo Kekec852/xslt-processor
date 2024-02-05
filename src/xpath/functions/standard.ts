@@ -10,7 +10,7 @@ function cyrb53(str: string, seed = 0) {
     let h1 = 0xdeadbeef ^ seed;
     let h2 = 0x41c6ce57 ^ seed;
 
-    for(let i = 0, ch: any; i < str.length; i++) {
+    for (let i = 0, ch: any; i < str.length; i++) {
         ch = str.charCodeAt(i);
         h1 = Math.imul(h1 ^ ch, 2654435761);
         h2 = Math.imul(h2 ^ ch, 1597334677);
@@ -193,12 +193,12 @@ export function formatNumber(context: ExprContext): StringValue {
 
             return new StringValue(
                 formatNumberIntegerPart(
-                        numberParts[0],
-                        maskParts[0],
-                        context.decimalFormatSettings
-                    ) +
-                    context.decimalFormatSettings.decimalSeparator +
-                    decimalPart
+                    numberParts[0],
+                    maskParts[0],
+                    context.decimalFormatSettings
+                ) +
+                context.decimalFormatSettings.decimalSeparator +
+                decimalPart
             );
     }
 }
@@ -482,3 +482,35 @@ export function xmlToJson(context: ExprContext) {
     assert(this.args.length < 2);
     return new StringValue(JSON.stringify(!this.args.length ? 'null' : xmlValue(context.nodeList[context.position])));
 }
+
+export function stringJoin(context: ExprContext) {
+    let output = [];
+
+    for (let i = 0; i < this.args.length - 1; i++) {
+        const entry = this.args[i];
+
+        output.push(entry.evaluate(context).stringValue());
+    }
+
+    return output.join(this.args[this.args.length - 1]);
+}
+
+export function replace(context: ExprContext) {
+    let s0 = this.args[0].evaluate(context).stringValue();
+    const s1 = this.args[1].evaluate(context).stringValue();
+    const s2 = this.args[2].evaluate(context).stringValue();
+
+    return new StringValue(s0.replace(s1, s2));
+}
+
+// concat(
+//     string - join((
+//         normalize - space(
+//             replace(
+//                 replace(@naziv, '\\', '\\\\')
+//                 , $dQuot, $dQuotR)),
+//         normalize - space(
+//             replace(
+//                 replace(., '\\', '\\\\')
+//                 , $dQuot, $dQuotR))
+//     ), ': '), '')

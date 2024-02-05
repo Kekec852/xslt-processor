@@ -32,7 +32,9 @@ import {
     ceiling,
     round,
     current,
-    formatNumber
+    formatNumber,
+    stringJoin,
+    replace
 } from '../functions';
 import { extCardinal, extIf, extJoin } from '../functions/non-standard';
 import { lowerCase, upperCase } from '../functions/standard-20';
@@ -96,7 +98,9 @@ export class FunctionCallExpr extends Expression {
         // returns the current node that many times. It can be used in the
         // select attribute to iterate over an integer range.
 
-        'ext-cardinal': extCardinal
+        'ext-cardinal': extCardinal,
+        replace,
+        'string-join': stringJoin
     };
 
     constructor(name: any) {
